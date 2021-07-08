@@ -42,6 +42,7 @@ If this repo was useful to you, feel free to buy us some coffees! :)
    ```
 3. Download Magento from [magento.com](https://magento.com/tech-resources/download) and move to the `web/` directory in the repo
 4. Change the `APP_DOMAIN` in test.env to your FQDN
+5. Generate SSL cert or drop in your own cert: `cd ssl-test && ./gencert.sh -d <replace with your own FQDN> && cd ..`
 5. Bring up the containers and install Magento 2 with REDIS:
    ```
    $ ./up.sh
@@ -94,9 +95,13 @@ Uncomment the following in `docker-compose.yml`:
 #         - m2-db-mysql:/var/lib/mysql
 ```
 
-## QUESTIONS & REPORTING ISSUES
+## QUESTIONS, REPORTING ISSUES, & CONTRIBUTIONS
+
+If you are seeing this on GitHub, this is just a mirror. The actual working repo is at [GitLab](https://gitlab.com/hkdb/m2-nginx). If you are already viewing this on GitLab, please continue reading.
 
 For any questions or identified issues with this repo, please submit a ticket at [GitLab](https://gitlab.com/hkdb/m2-nginx/-/issues). However, before you do so, I ask that you read through the rest of this README to ensure that what's documented doesn't already solve your problem.
+
+If you would like to contribute to this project, please make sure you are doing it with the [GitLab repo](https://gitlab.com/hkdb/m2-nginx).
 
 ## CONTAINERS SPECIFICS
 
@@ -192,6 +197,7 @@ Checklist:
 
 ## HISTORY
 
+- 07072021 - Minor README fixes to reflect Github mirroring
 - 07072021 - Initial commit
 
 ## DISCLAIMER
