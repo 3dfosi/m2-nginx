@@ -13,6 +13,8 @@ Targeting production deployments with the below architecture:
 
 [![Production Architecture](readme/m2-arch-redacted-v3.jpg)](readme/m2-arch-redacted-v3.jpg)
 
+For more background of where this repo came from, you can read this [blog post](https://hkdb.medium.com/single-command-magento-2-setup-67c041a032d1).
+
 ## SUPPORT US!
 
 If this repo was useful to you, feel free to buy us some coffees! :)
