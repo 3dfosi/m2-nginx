@@ -1,0 +1,42 @@
+server {
+  listen       80;
+  listen   [::]:80;
+  server_name  app_domain www.app_domain;
+  return       301 https://app_domain$request_uri;
+}
+
+server {
+    resolver   1.1.1.1;
+    listen 443 ssl http2;
+    
+    server_name  www.app_domain app_domain;
+      
+    ssl_certificate     /etc/letsencrypt/live/app_domain/app_domain.crt;
+    ssl_certificate_key /etc/letsencrypt/live/app_domain/app_domain.key;
+
+    ssl_protocols              TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_ciphers               'AES128+EECDH:AES128+EDH:!aNULL';
+    ssl_session_cache    shared:SSL:10m;
+    ssl_session_timeout 24h;
+    keepalive_timeout 300s;
+
+    location / {
+      proxy_pass http://127.0.0.1:6081;
+      proxy_headers_hash_max_size 2048;
+      proxy_headers_hash_bucket_size 128;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Forwarded-Host $http_host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Ssl-Offloaded "1";
+      proxy_set_header      X-Forwarded-Proto https;
+      proxy_set_header      X-Forwarded-Port 443;
+      #proxy_hide_header X-Varnish;
+      #proxy_hide_header Via;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_buffer_size          128k;
+      proxy_buffers              4 256k;
+      proxy_busy_buffers_size    256k;
+    }
+
+}

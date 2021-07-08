@@ -1,0 +1,49 @@
+version: "3.3"  # optional since v1.27.0
+
+services:
+   m2-web:
+      image: registry.gitlab.com/hkdb/m2-nginx/web:v0.01
+      container_name: m2-web
+      hostname: m2-web
+      env_file:
+         - ./test.env
+      volumes:
+         - ./ssl-test:/etc/letsencrypt/live/${APP_DOMAIN}:ro
+#         - m2-web-homedir:/home/magento
+      ports:
+         - "80:80"
+         - "443:443"
+      networks:
+         m2-net:
+            ipv4_address: 172.20.0.2
+      links:
+         - m2-db
+         - m2-redis
+   m2-db:
+      image: registry.gitlab.com/hkdb/m2-nginx/db:v0.01
+      container_name: m2-db
+      hostname: m2-db
+#      volumes:
+#         - m2-db-mysql:/var/lib/mysql
+      networks:
+         m2-net:
+            ipv4_address: 172.20.0.36
+   m2-redis:
+      image: registry.gitlab.com/hkdb/m2-nginx/redis:v0.01
+      container_name: m2-redis
+      hostname: m2-redis
+      env_file:
+         - ./test.env
+      volumes:
+         - ./ssl-test:/etc/letsencrypt/live/${APP_DOMAIN}:ro
+      networks:
+         m2-net:
+            ipv4_address: 172.20.0.37
+networks:
+   m2-net:
+      driver: bridge
+      ipam:
+         driver: default
+         config:
+            - subnet: 172.20.0.0/24
+

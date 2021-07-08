@@ -1,0 +1,49 @@
+upstream fastcgi_backend {
+  server  unix:/var/run/php/php7.4-fpm-magento.sock;
+}
+
+map $http_host $MAGE_RUN_CODE {
+    www.app_domain app_domain;
+}
+
+server {
+  listen       80;
+  listen   [::]:80;
+  server_name  app_domain www.app_domain;
+  return       301 https://app_domain$request_uri;
+}
+
+
+server {
+  listen 443 ssl;
+  ssl_certificate     /etc/letsencrypt/live/app_domain/app_domain.crt;
+  ssl_certificate_key /etc/letsencrypt/live/app_domain/app_domain.key;
+
+  set $maintenance off;
+
+  if (-f $MAGE_ROOT/maintenance.enable) {
+    set $maintenance on;
+  }
+
+  if ($maintenance = on) {
+     return 503;
+  }
+
+  location /maintenance {
+  }
+
+  error_page 503 @maintenance;
+
+  location @maintenance {
+    root $MAGE_ROOT;
+    rewrite ^(.*)$ /maintenance.html break;
+  }
+
+  server_name app_domain www.app_domain localhost;
+  set $MAGE_ROOT /home/magento;
+  # set $MAGE_MODE developer;
+  # set $MAGE_RUN_CODE base;
+  # set $MAGE_RUN_TYPE store;
+  # set $MAGE_RUN_TYPE website;
+  include /home/magento/nginx.conf.sample;
+}
